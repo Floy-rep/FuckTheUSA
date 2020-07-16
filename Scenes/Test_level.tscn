@@ -24,5 +24,16 @@ modulate = Color( 1, 1, 1, 0.0156863 )
 position = Vector2( -12.7134, 10.8141 )
 scale = Vector2( 8.70605, 14.6687 )
 normal = ExtResource( 2 )
+
+[node name="Score" type="Label" parent="."]
+margin_left = 11.4606
+margin_top = 13.4294
+margin_right = 101.461
+margin_bottom = 43.4294
+rect_scale = Vector2( 4, 4 )
+text = "Score: 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="activated_session" to="." method="_on_TouchScreenButton_pressed"]
 [connection signal="released" from="activated_session" to="." method="_on_activated_session_released"]
