@@ -6,15 +6,13 @@
 extents = Vector2( 24.9135, 24.8219 )
 
 [node name="Block" type="KinematicBody2D"]
-position = Vector2( 68, 24 )
+position = Vector2( 316.609, 171.793 )
 script = ExtResource( 2 )
 
 [node name="Sprite" type="TouchScreenButton" parent="."]
-position = Vector2( 171.194, 164.071 )
-scale = Vector2( 1.01382, 1.01865 )
+position = Vector2( 0, 1.7818 )
 passby_press = true
 
 [node name="Fall_coll" type="CollisionShape2D" parent="."]
-position = Vector2( 196.609, 189.504 )
 shape = SubResource( 1 )
 [connection signal="pressed" from="Sprite" to="." method="_on_Sprite_pressed"]

@@ -11,7 +11,7 @@ script = ExtResource( 1 )
 [node name="floor" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="floor"]
-position = Vector2( 286.869, 719.846 )
+position = Vector2( 289.697, 660.449 )
 scale = Vector2( 29.1264, 0.335065 )
 shape = SubResource( 1 )
 
@@ -20,6 +20,7 @@ wait_time = 0.2
 
 [node name="activated_session" type="TouchScreenButton" parent="."]
 modulate = Color( 1, 1, 1, 0.0156863 )
+position = Vector2( 0, -16.9706 )
 scale = Vector2( 9.03422, 11.7841 )
 normal = ExtResource( 2 )
 [connection signal="pressed" from="activated_session" to="." method="_on_TouchScreenButton_pressed"]
