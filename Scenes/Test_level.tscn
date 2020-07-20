@@ -17,7 +17,7 @@ scale = Vector2( 29.1264, 0.335065 )
 shape = SubResource( 1 )
 
 [node name="Wait" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.14
 
 [node name="activated_session" type="TouchScreenButton" parent="."]
 modulate = Color( 1, 1, 1, 0.0156863 )
@@ -35,5 +35,4 @@ text = "Score: 0"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="pressed" from="activated_session" to="." method="_on_TouchScreenButton_pressed"]
 [connection signal="released" from="activated_session" to="." method="_on_activated_session_released"]

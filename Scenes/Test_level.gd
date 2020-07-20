@@ -17,7 +17,6 @@ func _clear_matrix(matrix):
 		for j in range(len(matrix[i])):
 			if typeof(matrix[i][j]) != 2:
 				matrix_ready[i].append(matrix[i][j])
-				
 
 	print(matrix_ready)
 
@@ -57,6 +56,7 @@ func _spawn_matrix(matrix):
 				block.position = Vector2(125 + i *50, j * 50)
 				$Wait.start()
 				yield($Wait, "timeout")
+				
 				add_child(block)
 			else:
 				continue
@@ -64,44 +64,46 @@ func _spawn_matrix(matrix):
 	if launch == false:
 		_clear_matrix(matrix)
 		launch = true
-	
+	Global.can_play = true
 #func _process(delta):
 #	pass
 
 func _on_activated_session_released():
-	Global.last_activated_pos = []
+	if Global.can_play:
+		Global.last_activated_pos = []
+		
 	
-
-	for i in range(len(matrix_ready)):
-		for j in range(len(matrix_ready[i])):
-			matrix_ready[i][j].get_node("Sprite").normal = load("res://Textures/Blocks/"+matrix_ready[i][j].color+".png")
-			matrix_ready[i][j].selected = false
-#	print(Global.selected_blocks)
+		for i in range(len(matrix_ready)):
+			for j in range(len(matrix_ready[i])):
+				matrix_ready[i][j].get_node("Sprite").normal = load("res://Textures/Blocks/"+matrix_ready[i][j].color+".png")
+				matrix_ready[i][j].selected = false
+	#	print(Global.selected_blocks)
+		
+		for j in range (len(matrix_ready)):
+			for h in range(len(matrix_ready[j])):
+				for i in Global.selected_blocks:
+					if str(matrix_ready[j][h]) == str(i):
+						matrix_ready[j][h] = 0
+						get_child(i.get_index()).queue_free()
+						break
+		
+		
+		for i in range(len(matrix_ready)):
+			for j in range(len(matrix_ready[i])):
+				if typeof(matrix_ready[i][j]) == 2:
+					matrix_ready[i].push_back(matrix_ready[i][j])
+					matrix_ready[i].remove(matrix_ready[i].find(matrix_ready[i][j]))
+						
+		for i in range(len(matrix_ready)):
+			for j in range(len(matrix_ready[i])):
+				if typeof(matrix_ready[i][j]) != 2:
+					matrix_ready[i][j].posit = Vector2(i,j + spawn_matrix[i].count(1))
 	
-	for j in range (len(matrix_ready)):
-		for h in range(len(matrix_ready[j])):
-			for i in Global.selected_blocks:
-				if str(matrix_ready[j][h]) == str(i):
-					matrix_ready[j][h] = 0
-					get_child(i.get_index()).queue_free()
-					break
-	
-	
-	for i in range(len(matrix_ready)):
-		for j in range(len(matrix_ready[i])):
-			if typeof(matrix_ready[i][j]) == 2:
-				matrix_ready[i].push_back(matrix_ready[i][j])
-				matrix_ready[i].remove(matrix_ready[i].find(matrix_ready[i][j]))
-					
-	for i in range(len(matrix_ready)):
-		for j in range(len(matrix_ready[i])):
-			if typeof(matrix_ready[i][j]) != 2:
-				matrix_ready[i][j].posit = Vector2(i,j + spawn_matrix[i].count(1))
-
-	$Score.text = "Score: " + str(int($Score.text.lstrip(7)) + len(Global.selected_blocks))
-	
-	Global.selected_blocks = []
-	print(matrix_ready)
-	print("")
-	_spawn_matrix(matrix_ready)
+		$Score.text = "Score: " + str(int($Score.text.lstrip(7)) + len(Global.selected_blocks))
+		
+		Global.selected_blocks = []
+		print(matrix_ready)
+		print("")
+		Global.can_play = false
+		_spawn_matrix(matrix_ready)
 
