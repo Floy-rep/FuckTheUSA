@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scenes/Test_level.gd" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://Textures/marathon.png" type="Texture" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -21,8 +22,8 @@ wait_time = 0.14
 
 [node name="activated_session" type="TouchScreenButton" parent="."]
 modulate = Color( 1, 1, 1, 0.0156863 )
-position = Vector2( -12.7134, 10.8141 )
-scale = Vector2( 8.70605, 14.6687 )
+position = Vector2( -15.5083, 195.079 )
+scale = Vector2( 8.821, 11.4693 )
 normal = ExtResource( 2 )
 
 [node name="Score" type="Label" parent="."]
@@ -35,4 +36,38 @@ text = "Score: 0"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Seconds" type="Label" parent="."]
+margin_left = 11.4606
+margin_top = 70.1258
+margin_right = 101.461
+margin_bottom = 100.126
+rect_scale = Vector2( 4, 4 )
+text = "Seconds left:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Numbers" type="Label" parent="Seconds"]
+modulate = Color( 0.12549, 1, 0, 1 )
+margin_left = 78.2099
+margin_top = 3.8147e-06
+margin_right = 108.21
+margin_bottom = 14.0
+rect_scale = Vector2( 0.975672, 0.975672 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "60"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Game_Timer" type="Timer" parent="."]
+
+[node name="Start" type="TouchScreenButton" parent="."]
+visible = false
+position = Vector2( 452.37, 51.0644 )
+normal = ExtResource( 3 )
 [connection signal="released" from="activated_session" to="." method="_on_activated_session_released"]
+[connection signal="timeout" from="Game_Timer" to="." method="_on_Game_Timer_timeout"]
+[connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]

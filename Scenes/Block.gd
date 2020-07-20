@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+### VARIABLES ###
 
 var color = ""
 var nulled = false
@@ -9,26 +10,21 @@ var velocity = Vector2()
 var speed_falling = 1100
 const Floor = Vector2(0, -1)
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass
-#	$Sprite.normal = load("res://Textures/Blocks/1.png")
-
+### FALLING BLOCKS ###
 
 func _process(delta):
 	move_and_slide(velocity, Floor)
-	
 	if is_on_floor():
 		velocity.y = 0
 	else:
 		velocity.y = speed_falling
 
-		
+### TOUCHING DE BLOCK ###
 
 func _on_Sprite_pressed():
 	print(posit)
 	if nulled == false:
-		if Global.can_play:
+		if Global.can_play and Global.playing_by_timer == false:
 			if len(Global.last_activated_pos) > 0:
 				
 				### FIX MUTLI-TOUCH ###
@@ -65,7 +61,6 @@ func _on_Sprite_pressed():
 			else:
 				print("first")
 				
-				
 				Global.selected_blocks.append($".")
 				selected = true
 				$Sprite.normal = load("res://Textures/Blocks/selected.png")
@@ -73,6 +68,3 @@ func _on_Sprite_pressed():
 				Global.last_activated_pos.append(posit.x)
 				Global.last_activated_pos.append(posit.y)
 				Global.selected_color = color
-
-
-	pass # Replace with function body.
