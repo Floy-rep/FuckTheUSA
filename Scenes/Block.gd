@@ -43,7 +43,7 @@ func _on_Sprite_pressed():
 						
 						if len(Global.selected_blocks) > 1:
 							if Global.selected_blocks[-2] == $".":
-								print(bonus)
+								
 								if Global.selected_blocks[-1].bonus == "":
 									Global.selected_blocks[-1].get_node("Sprite").normal = load("res://Textures/Blocks/"+color+".png")
 								else:

@@ -77,6 +77,11 @@ func _spawn_matrix(matrix):
 					block.get_node("Sprite").normal = load("res://Textures/Blocks/" + Global.selected_color + "_bomb.png")
 					block.bonus = "bomb"
 					
+				elif matrix[i][j] == 6:
+					block.color = Global.selected_color
+					block.get_node("Sprite").normal = load("res://Textures/Blocks/" + Global.selected_color + "_skull.png")
+					block.bonus = "skull"
+					
 				### SET DE POSITION OF BLOCK ###
 				
 				if matrix[i][j] != 1:
@@ -135,6 +140,13 @@ func _deleting_blocks(i,j,h):
 						if f + i.posit.y - minus_y >= 0  and f + i.posit.y - minus_y < len (matrix_ready[g+i.posit.x]):
 							if typeof(matrix_ready[g + i.posit.x][f + i.posit.y - minus_y]) != 2:
 								_deleting_blocks(matrix_ready[g + i.posit.x][f + i.posit.y - minus_y], g + i.posit.x, f + i.posit.y - minus_y)
+		
+		elif i.bonus == "skull":
+			i.bonus = ""
+			for g in range(len(matrix_ready)):
+				for f in range(len(matrix_ready[g])):
+					if typeof(matrix_ready[g][f]) != 2:
+						_deleting_blocks(matrix_ready[g][f], g, f)
 
 ### CHECKING PROCESSING OF DE GAME ###
 
@@ -180,12 +192,12 @@ func _on_activated_session_released():
 				elif bonus == 2:
 					matrix_ready[pos.x][pos.y] = 4
 			
-			if len(Global.selected_blocks) >= 8 and len(Global.selected_blocks) < 17:
+			if len(Global.selected_blocks) >= 8 and len(Global.selected_blocks) < 12:
 				matrix_ready[pos.x][pos.y] = 5
-				
-#			print(matrix_ready)
-#			print(Score)
 			
+			if len(Global.selected_blocks) >= 12:
+				matrix_ready[pos.x][pos.y] = 6
+				
 			### ADAPTING MATRIX ###
 			
 			var buffer
