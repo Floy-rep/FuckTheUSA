@@ -1,8 +1,13 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scenes/Test_level.gd" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
 [ext_resource path="res://Textures/marathon.png" type="Texture" id=3]
+[ext_resource path="res://Textures/Blocks/blue_skull.png" type="Texture" id=4]
+[ext_resource path="res://Textures/Blocks/blue_ver.png" type="Texture" id=5]
+[ext_resource path="res://Textures/Blocks/blue_bomb.png" type="Texture" id=6]
+[ext_resource path="res://Textures/Blocks/blue_hor.png" type="Texture" id=7]
+[ext_resource path="res://Textures/Blocks/blue_shovel.png" type="Texture" id=8]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -13,7 +18,7 @@ script = ExtResource( 1 )
 [node name="floor" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="floor"]
-position = Vector2( 259.731, 858.226 )
+position = Vector2( 251.243, 792 )
 scale = Vector2( 29.1264, 0.335065 )
 shape = SubResource( 1 )
 
@@ -22,27 +27,30 @@ wait_time = 0.16
 
 [node name="activated_session" type="TouchScreenButton" parent="."]
 modulate = Color( 1, 1, 1, 0.0156863 )
-position = Vector2( -15.5083, 195.079 )
-scale = Vector2( 8.821, 11.4693 )
+position = Vector2( -20.7568, -8 )
+scale = Vector2( 8.93142, 15.4124 )
 normal = ExtResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Score" type="Label" parent="."]
-margin_left = 11.4606
-margin_top = 13.4294
-margin_right = 101.461
-margin_bottom = 43.4294
-rect_scale = Vector2( 4, 4 )
+margin_left = 3.24316
+margin_top = 888.0
+margin_right = 93.2436
+margin_bottom = 918.0
+rect_scale = Vector2( 2.79732, 2.79732 )
 text = "Score: 0"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Seconds" type="Label" parent="."]
-margin_left = 11.4606
-margin_top = 70.1258
-margin_right = 101.461
-margin_bottom = 100.126
-rect_scale = Vector2( 4, 4 )
+margin_left = 235.243
+margin_top = 888.0
+margin_right = 325.244
+margin_bottom = 918.0
+rect_scale = Vector2( 2.85395, 2.85395 )
 text = "Seconds left:"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -50,9 +58,9 @@ __meta__ = {
 
 [node name="Numbers" type="Label" parent="Seconds"]
 modulate = Color( 0.12549, 1, 0, 1 )
-margin_left = 78.2099
+margin_left = 78.4877
 margin_top = 3.8147e-06
-margin_right = 108.21
+margin_right = 108.488
 margin_bottom = 14.0
 rect_scale = Vector2( 0.975672, 0.975672 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
@@ -65,9 +73,36 @@ __meta__ = {
 [node name="Game_Timer" type="Timer" parent="."]
 
 [node name="Start" type="TouchScreenButton" parent="."]
-visible = false
-position = Vector2( 452.37, 51.0644 )
+position = Vector2( 443.243, 16 )
 normal = ExtResource( 3 )
+
+[node name="bonuses" type="Node2D" parent="."]
+position = Vector2( -244.757, 8 )
+
+[node name="skull" type="TouchScreenButton" parent="bonuses"]
+position = Vector2( 260.084, 8.46445 )
+normal = ExtResource( 4 )
+
+[node name="ver" type="TouchScreenButton" parent="bonuses"]
+position = Vector2( 315.243, 8 )
+normal = ExtResource( 5 )
+
+[node name="hor" type="TouchScreenButton" parent="bonuses"]
+position = Vector2( 371.243, 8.46445 )
+normal = ExtResource( 7 )
+
+[node name="bomb" type="TouchScreenButton" parent="bonuses"]
+position = Vector2( 427.243, 8.46445 )
+normal = ExtResource( 6 )
+
+[node name="shovel" type="TouchScreenButton" parent="bonuses"]
+position = Vector2( 483.243, 8.46445 )
+normal = ExtResource( 8 )
 [connection signal="released" from="activated_session" to="." method="_on_activated_session_released"]
 [connection signal="timeout" from="Game_Timer" to="." method="_on_Game_Timer_timeout"]
 [connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]
+[connection signal="released" from="bonuses/skull" to="." method="_on_TouchScreenButton_released"]
+[connection signal="released" from="bonuses/ver" to="." method="_on_ver_released"]
+[connection signal="released" from="bonuses/hor" to="." method="_on_hor_released"]
+[connection signal="released" from="bonuses/bomb" to="." method="_on_bomb_released"]
+[connection signal="released" from="bonuses/shovel" to="." method="_on_shovel_released"]

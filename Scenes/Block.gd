@@ -26,8 +26,7 @@ func _process(delta):
 func _on_Sprite_pressed():
 	print(posit)
 	if nulled == false:
-		if Global.can_play and Global.playing_by_timer == false:
-#		if Global.can_play and Global.playing_by_timer == false:
+		if Global.can_play and Global.playing_by_timer == false and Global.bonus_spawned == false:
 			if len(Global.last_activated_pos) > 0:
 				
 				### FIX MUTLI-TOUCH ###
@@ -68,11 +67,30 @@ func _on_Sprite_pressed():
 					print("too far")
 			else:
 				print("first")
-				
-				Global.selected_blocks.append($".")
-				selected = true
-				$Sprite.normal = load("res://Textures/Blocks/selected.png")
-				
-				Global.last_activated_pos.append(posit.x)
-				Global.last_activated_pos.append(posit.y)
-				Global.selected_color = color
+				if Global.bonus_activated != "":
+					if Global.bonus_activated == "shovel":
+						var y = get_node("../").spawn_matrix[posit.x].count(1)
+						get_node("../").Score = 0
+						get_node("../")._deleting_blocks(get_node("../").matrix_ready[posit.x][ posit.y - y], posit.x, posit.y - y)
+						get_node("../")._update_blocks()
+						Global.can_play = false
+						get_node("../")._spawn_matrix(get_node("../").matrix_ready)
+						Global.bonus_spawned = true
+						get_node("../bonuses/" + Global.bonus_activated).normal = load("res://Textures/Blocks/blue_"+ Global.bonus_activated + ".png")
+						Global.bonus_activated = ""
+					else:
+						if bonus != "chained":
+							bonus = Global.bonus_activated
+							$Sprite.normal = load("res://Textures/Blocks/"+color+"_"+Global.bonus_activated+".png")
+							Global.bonus_spawned = true
+							get_node("../bonuses/" + Global.bonus_activated).normal = load("res://Textures/Blocks/blue_"+ Global.bonus_activated + ".png")
+							Global.bonus_activated = ""
+				else:
+					Global.selected_blocks.append($".")
+					selected = true
+					$Sprite.normal = load("res://Textures/Blocks/selected.png")
+					
+					Global.last_activated_pos.append(posit.x)
+					Global.last_activated_pos.append(posit.y)
+					Global.selected_color = color
+
