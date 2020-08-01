@@ -18,7 +18,7 @@ scale = Vector2( 29.1264, 0.335065 )
 shape = SubResource( 1 )
 
 [node name="Wait" type="Timer" parent="."]
-wait_time = 0.14
+wait_time = 0.16
 
 [node name="activated_session" type="TouchScreenButton" parent="."]
 modulate = Color( 1, 1, 1, 0.0156863 )

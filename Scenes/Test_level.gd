@@ -4,8 +4,12 @@ extends Node2D
 
 var spawn_matrix = [[1,0,0,0,0,0,0],[0,0,0,0,0,0],[1,1,0,0,0,0,0,0],[1,1,0,0,0,0,0,0], [0,0,0,0,0,0], [1,0,0,0,0,0,0]]
 #var spawn_matrix = [[1,0,0],[0,0,0],[1,0,0]]
+#var spawn_matrix = [[1,0,0,0,0], [1,0,0,0,0], [0,0,0,0,0]]
 var matrix_ready = []
 var launch = false
+
+var Score = 0
+
 
 func _ready():
 	_spawn_matrix(spawn_matrix)
@@ -19,7 +23,7 @@ func _process(delta):
 ### CLEARING DE MATRIX FROM NULL OBJECTS ###
 
 func _clear_matrix(matrix):
-	print(matrix)
+#	print(matrix)
 	for i in range(len(matrix)):
 		matrix_ready.append([])
 		for j in range(len(matrix[i])):
@@ -29,6 +33,7 @@ func _clear_matrix(matrix):
 ### GENERATING NEW BLOCKS ###
 
 func _spawn_matrix(matrix):
+#	print(Global.selected_color)
 	for i in range(len(matrix)):
 		for j in range(len(matrix[i])):
 			if typeof(matrix[i][j]) == 2:
@@ -52,18 +57,34 @@ func _spawn_matrix(matrix):
 					if color == 4:
 						block.color = "green"
 						block.get_node("Sprite").normal = load("res://Textures/Blocks/green.png")
-						
-					### SET DE POSITION ###
-						
+	
+				elif matrix[i][j] == 1:
+					block.nulled = true
+					block.visible = false
+				
+				elif matrix[i][j] == 3:
+					block.color = Global.selected_color
+					block.get_node("Sprite").normal = load("res://Textures/Blocks/" + Global.selected_color + "_hor.png")
+					block.bonus = "hor"
+					
+				elif matrix[i][j] == 4:
+					block.color = Global.selected_color
+					block.get_node("Sprite").normal = load("res://Textures/Blocks/" + Global.selected_color + "_ver.png")
+					block.bonus = "ver"
+					
+				elif matrix[i][j] == 5:
+					block.color = Global.selected_color
+					block.get_node("Sprite").normal = load("res://Textures/Blocks/" + Global.selected_color + "_bomb.png")
+					block.bonus = "bomb"
+					
+				### SET DE POSITION OF BLOCK ###
+				
+				if matrix[i][j] != 1:
 					if launch == false:
 						block.posit = Vector2(i,j)
 					else:
 						block.posit = Vector2(i, j + spawn_matrix[i].count(1))
 					matrix[i][j] = block
-	
-				elif matrix[i][j] == 1:
-					block.nulled = true
-					block.visible = false
 				
 				### SPAWN BLOCK ###
 				
@@ -83,6 +104,38 @@ func _spawn_matrix(matrix):
 	if launch:
 		Global.can_play = true
 
+
+func _deleting_blocks(i,j,h):
+	if i.bonus == "":
+		get_child(i.get_index()).queue_free()
+		matrix_ready[j][h] = 0
+		Score += 1
+	else:
+		
+		if i.bonus == "hor":
+			i.bonus = ""
+			for g in range (len(matrix_ready)):
+				for f in range(len(matrix_ready[g])):
+					if typeof(matrix_ready[g][f]) != 2:
+						if matrix_ready[g][f].posit.y == i.posit.y:
+							_deleting_blocks(matrix_ready[g][f], g, f)
+							
+		elif i.bonus == "ver":
+			i.bonus = ""
+			for g in range(len(matrix_ready[i.posit.x])):
+				if typeof(matrix_ready[i.posit.x][g]) != 2:
+					_deleting_blocks(matrix_ready[i.posit.x][g], i.posit.x, g)
+		
+		elif i.bonus == "bomb":
+			i.bonus = ""
+			for g in range(-1, 2, 1):
+				for f in range(-1, 2, 1):
+					if g + i.posit.x >= 0 and g + i.posit.x < len(matrix_ready):
+						var minus_y = spawn_matrix[g + i.posit.x].count(1)
+						if f + i.posit.y - minus_y >= 0  and f + i.posit.y - minus_y < len (matrix_ready[g+i.posit.x]):
+							if typeof(matrix_ready[g + i.posit.x][f + i.posit.y - minus_y]) != 2:
+								_deleting_blocks(matrix_ready[g + i.posit.x][f + i.posit.y - minus_y], g + i.posit.x, f + i.posit.y - minus_y)
+
 ### CHECKING PROCESSING OF DE GAME ###
 
 func _on_activated_session_released():
@@ -93,38 +146,68 @@ func _on_activated_session_released():
 		
 		for i in range(len(matrix_ready)):
 			for j in range(len(matrix_ready[i])):
-				matrix_ready[i][j].get_node("Sprite").normal = load("res://Textures/Blocks/"+matrix_ready[i][j].color+".png")
+				if matrix_ready[i][j].bonus == "": 
+					matrix_ready[i][j].get_node("Sprite").normal = load("res://Textures/Blocks/"+matrix_ready[i][j].color+".png")
+				else:
+					matrix_ready[i][j].get_node("Sprite").normal = load("res://Textures/Blocks/"+matrix_ready[i][j].color + "_" + matrix_ready[i][j].bonus + ".png")
 				matrix_ready[i][j].selected = false
-		
+				
 		### DELETING CHOOSED BLOCKS ###
 		
 		if len(Global.selected_blocks) >= 3 :
+			
+			Score = 0
 			for j in range (len(matrix_ready)):
 				for h in range(len(matrix_ready[j])):
 					for i in Global.selected_blocks:
 						if str(matrix_ready[j][h]) == str(i):
-							matrix_ready[j][h] = 0
-							get_child(i.get_index()).queue_free()
-							break
+							
+							_deleting_blocks(i,j,h)
+#							break
+			
+			var pos = Global.selected_blocks[-1].posit 
+			pos.y -= spawn_matrix[pos.x].count(1)
+			var bonus = randi()%2+1
+			if len(Global.selected_blocks) >= 5 and len(Global.selected_blocks) < 8:
+				
+					### HORIZONTAL BONUS ###
+				
+				if bonus == 1:
+					matrix_ready[pos.x][pos.y] = 3
+					
+					### VERTICAL BONUS ###
+					
+				elif bonus == 2:
+					matrix_ready[pos.x][pos.y] = 4
+			
+			if len(Global.selected_blocks) >= 8 and len(Global.selected_blocks) < 17:
+				matrix_ready[pos.x][pos.y] = 5
+				
+#			print(matrix_ready)
+#			print(Score)
 			
 			### ADAPTING MATRIX ###
 			
+			var buffer
 			for i in range(len(matrix_ready)):
-				for j in range(len(matrix_ready[i])):
-					if typeof(matrix_ready[i][j]) == 2:
-						matrix_ready[i].push_back(matrix_ready[i][j])
-						matrix_ready[i].remove(matrix_ready[i].find(matrix_ready[i][j]))
-			
+				for j in range(len(matrix_ready[i])): 
+					for h in range(len(matrix_ready[i])-j-1): 
+						if typeof(matrix_ready[i][h]) < typeof(matrix_ready[i][h+1]) : 
+							buffer = matrix_ready[i][h]
+							matrix_ready[i][h] = matrix_ready[i][h+1]
+							matrix_ready[i][h+1] = buffer
+#			print(matrix_ready)
+
 			### SET DE NEW POSITION OF OLD BLOCKS ###
 			
 			for i in range(len(matrix_ready)):
 				for j in range(len(matrix_ready[i])):
 					if typeof(matrix_ready[i][j]) != 2:
 						matrix_ready[i][j].posit = Vector2(i,j + spawn_matrix[i].count(1))
+			
+			$Score.text = "Score: " + str(int($Score.text.lstrip(7)) + Score)
 		
-			$Score.text = "Score: " + str(int($Score.text.lstrip(7)) + len(Global.selected_blocks))
-		
-		### CALL FUCNTION TO SPAWN NEW BLOCKS ###
+		### CALL FUNCTION TO SPAWN NEW BLOCKS ###
 		
 		if len(Global.selected_blocks) >= 3:
 			Global.selected_blocks = []
@@ -158,6 +241,13 @@ func _on_Game_Timer_timeout():
 		$Seconds/Numbers.text = "61"
 		$Seconds/Numbers.modulate = ColorN("green")
 		Global.selected_blocks = []
+		
+		for i in range(len(matrix_ready)):
+			for j in range(len(matrix_ready[i])):
+				if typeof(matrix_ready[i][j]) != 2:
+					matrix_ready[i][j].get_node("Sprite").normal = load("res://Textures/Blocks/"+matrix_ready[i][j].color+".png")
+					matrix_ready[i][j].bonus = ""
+		
 		Global.can_play = false
 		
 	$Seconds/Numbers.text = str(int($Seconds/Numbers.text) - 1)

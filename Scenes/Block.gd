@@ -3,11 +3,13 @@ extends KinematicBody2D
 ### VARIABLES ###
 
 var color = ""
+var bonus = ""
+
 var nulled = false
 var selected = false
 var posit = Vector2()
 var velocity = Vector2()
-var speed_falling = 1100
+var speed_falling = 3000
 const Floor = Vector2(0, -1)
 
 ### FALLING BLOCKS ###
@@ -25,6 +27,7 @@ func _on_Sprite_pressed():
 	print(posit)
 	if nulled == false:
 		if Global.can_play and Global.playing_by_timer == false:
+#		if Global.can_play and Global.playing_by_timer == false:
 			if len(Global.last_activated_pos) > 0:
 				
 				### FIX MUTLI-TOUCH ###
@@ -40,7 +43,12 @@ func _on_Sprite_pressed():
 						
 						if len(Global.selected_blocks) > 1:
 							if Global.selected_blocks[-2] == $".":
-								Global.selected_blocks[-1].get_node("Sprite").normal = load("res://Textures/Blocks/"+color+".png")
+								print(bonus)
+								if Global.selected_blocks[-1].bonus == "":
+									Global.selected_blocks[-1].get_node("Sprite").normal = load("res://Textures/Blocks/"+color+".png")
+								else:
+									Global.selected_blocks[-1].get_node("Sprite").normal = load("res://Textures/Blocks/"+Global.selected_blocks[-1].color + "_"+ Global.selected_blocks[-1].bonus + ".png")
+									
 								Global.selected_blocks[-1].selected = false
 								Global.selected_blocks.remove(len(Global.selected_blocks)-1)
 								
