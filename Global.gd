@@ -11,3 +11,7 @@ var bonus_spawned = false
 
 var can_play = false
 var playing_by_timer = false
+
+#var something = Vector2()
+
+

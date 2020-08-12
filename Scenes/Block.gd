@@ -4,19 +4,33 @@ extends KinematicBody2D
 
 var color = ""
 var bonus = ""
+var stable = false
+
+var stopped = false
 
 var nulled = false
 var selected = false
 var posit = Vector2()
+var posit_in_array = Vector2()
+
 var velocity = Vector2()
 var speed_falling = 3000
 const Floor = Vector2(0, -1)
 
+
+#func _ready():
+#	$".".set_collision_mask(1)
+
+
 ### FALLING BLOCKS ###
 
 func _process(delta):
-	move_and_slide(velocity, Floor)
+	if stopped == false:
+		move_and_slide(velocity, Floor)
 	if is_on_floor():
+		if stable:
+			stopped = true
+		speed_falling = 400
 		velocity.y = 0
 	else:
 		velocity.y = speed_falling
@@ -25,6 +39,9 @@ func _process(delta):
 
 func _on_Sprite_pressed():
 	print(posit)
+	print(posit_in_array)
+	print()
+
 	if nulled == false:
 		if Global.can_play and Global.playing_by_timer == false and Global.bonus_spawned == false:
 			if len(Global.last_activated_pos) > 0:
@@ -67,18 +84,18 @@ func _on_Sprite_pressed():
 					print("too far")
 			else:
 				print("first")
+				
 				if Global.bonus_activated != "":
+					
+					### SHOVEL ###
+					
 					if Global.bonus_activated == "shovel":
-						var y = get_node("../").spawn_matrix[posit.x].count(1)
-						get_node("../").Score = 0
-						get_node("../")._deleting_blocks(get_node("../").matrix_ready[posit.x][ posit.y - y], posit.x, posit.y - y)
-						get_node("../")._update_blocks()
-						Global.can_play = false
-						get_node("../")._spawn_matrix(get_node("../").matrix_ready)
-						Global.bonus_spawned = true
-						get_node("../bonuses/" + Global.bonus_activated).normal = load("res://Textures/Blocks/blue_"+ Global.bonus_activated + ".png")
-						Global.bonus_activated = ""
+						get_node("../").shovel($".")
+						
 					else:
+						
+						### BONUSES ###
+						
 						if bonus != "chained":
 							bonus = Global.bonus_activated
 							$Sprite.normal = load("res://Textures/Blocks/"+color+"_"+Global.bonus_activated+".png")
@@ -93,4 +110,3 @@ func _on_Sprite_pressed():
 					Global.last_activated_pos.append(posit.x)
 					Global.last_activated_pos.append(posit.y)
 					Global.selected_color = color
-

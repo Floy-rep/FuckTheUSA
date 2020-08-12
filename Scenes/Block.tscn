@@ -7,6 +7,8 @@ extents = Vector2( 24.9135, 24.8219 )
 
 [node name="Block" type="KinematicBody2D"]
 position = Vector2( 316.609, 171.793 )
+collision_layer = 0
+collision_mask = 2147483648
 script = ExtResource( 2 )
 
 [node name="Sprite" type="TouchScreenButton" parent="."]
